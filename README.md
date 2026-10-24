@@ -1,46 +1,120 @@
 # ANICLIP 🎬
 
-**AI Anime Story Clipper — Prototype v0.1**
+**AI Anime Story Clipper**
 
-ANICLIP is a prototype for planning short, story-driven anime clips for vertical video platforms and international audiences.
+ANICLIP is a planned AI-assisted tool for creating coherent, short anime storytelling clips for vertical-video creators and international audiences.
 
-> Current status: Interactive UI demo planning. Real video analysis and MP4 rendering are not implemented yet.
+The goal is not simply to collect random anime scenes. ANICLIP is designed to help creators build a story arc, discover relevant source candidates, review scene selections, and prepare an editing project for rendering.
+
+> **Project status:** Requirements and documentation are being finalized. Features described as planned are not necessarily implemented.
+
+## Product Workflow
+
+The primary workflow is **Anime → Character → Story Type**.
+
+1. Choose an anime.
+2. Choose a character.
+3. Choose a story type.
+4. Build a coherent story arc.
+5. Find candidate source videos for each story segment.
+6. Review, remove, or replace candidates.
+7. Check media availability and verify timestamps.
+8. Review and edit the Story Result.
+9. Continue through an eligible online rendering path or the Offline PC Renderer.
+
+If AI search cannot identify an anime, character, or source confidently, the interface should offer manual search or correction rather than inventing information.
 
 ## Planned Features
-- Multiple source platform options
-- Video URL format validation
-- Clip duration selection: 15, 20, or 30 seconds
-- Story result preview with clearly labeled demo content
-- Aspect ratio settings: 9:16, 1:1, 16:9, and 4:5
-- Subtitle, audio, and frame preferences
-- Future exploration of AI-powered Smart Hook and video rendering
 
-## Prototype Scope
-Version 0.1 focuses on the user interface and agreed workflow. It does not download or analyze videos, call Gemini, render real MP4 files, or publish content automatically.
+- **Anime and character search:** AI-assisted discovery with source references and manual fallback.
+- **Story Builder:** Arrange scenes into a meaningful narrative instead of selecting unrelated highlights.
+- **Six story types:** Origin Story, Betrayal & Revenge, Character Awakening, Strongest Moments, Emotional Story, and Full Character Journey.
+- **Smart Hook:** Suggest an opening moment and matching English text overlay based only on material the system can actually analyze.
+- **Hybrid source discovery:** Manual Links and AI Auto Search, with up to three candidate sources per story segment.
+- **Story Result:** Review the story sequence, source candidates, durations, overlays, and verification statuses before rendering.
+- **Output preferences:** Video aspect ratio, resolution, subtitles, audio/music, and framing.
+- **Shared project format:** Carry story planning and editing instructions between the online app and offline renderer.
 
-## Documentation
-- [Flowchart](docs/FLOWCHART.md)
-- [Specification](docs/SPECIFICATION.md)
+## Default Output
+
+| Setting | Default |
+|---|---|
+| Duration | 30 seconds |
+| Available durations | 15, 20, or 30 seconds |
+| Aspect ratio | 9:16 vertical |
+| Format | MP4 |
+| Resolution | Configurable; 1080p target where feasible |
+| Text overlays | English |
+| ANICLIP watermark | Off |
+| Automatic publishing | Not included |
+
+Actual output quality, rendering capability, and resolution depend on available processing resources and source-media properties.
+
+## Source Access and Verification
+
+Finding a source URL does not mean ANICLIP has access to an editable video file.
+
+A public video URL or platform metadata alone does not guarantee that the media can be acquired or rendered. ANICLIP must distinguish between:
+
+- Source discovered
+- Source access checked
+- Media available for processing
+- Timestamp verified
+- Unverified or unavailable source
+
+Timestamps must never be invented. If media cannot be accessed through supported and permitted methods, the app should explain the limitation and offer a manual route using local media the user owns or is authorized to edit.
+
+ANICLIP must not bypass DRM, paywalls, access controls, or other restrictions.
+
+## Architecture
+
+ANICLIP is planned as two complementary parts.
+
+### Online Web App
+
+Responsible for anime and character discovery, story planning, source candidates, user review, and project preparation.
+
+### Offline PC Renderer
+
+Responsible for processing authorized local media and rendering the final MP4. The first phase prioritizes a local FFmpeg-based workflow. More demanding local AI features can be evaluated after the target computer's hardware is known.
+
+Both parts should use a shared, versioned project format. An online project can be continued offline when the necessary local media files are available and correctly mapped.
+
+Cloud rendering is optional and must depend on actual free-tier quotas, compute availability, and cost limits.
 
 ## Design Direction
-- Dark charcoal interface
-- Lime green accent
-- Minimal, responsive layout
-- English-first interface for international creators
 
-## Development Principles
-- Start with a free-first prototype
-- Be transparent about hosting and compute limits
-- Protect API keys using backend secrets when AI integration is introduced
-- Respect copyright, platform rules, and source access restrictions
+- Dark charcoal interface with lime-green accents
+- Minimal, responsive, English-first UI
+- Clear status labels and editable results
+- No claims that simulated or unverified results are real processing output
+
+## Cost and Security Principles
+
+- Start with a free-first prototype.
+- Be transparent about hosting limits, API quotas, and compute requirements.
+- Never expose Gemini API keys in frontend code, public repositories, project exports, logs, or screenshots.
+- Keep AI credentials in a secure backend environment when integration is implemented.
+- Do not enable paid services or billing without explicit approval.
+- Do not promise unlimited free hosting, guaranteed virality, or guaranteed revenue.
+
+## Documentation
+
+- [Workflow Flowchart](docs/FLOWCHART.md)
+- [Product Specification](docs/SPECIFICATION.md)
 
 ## Roadmap
-1. Finalize structure and workflow
-2. Build the interactive UI prototype
-3. Test navigation and URL validation
-4. Evaluate AI integration and permitted video sources
-5. Plan real video processing and MP4 rendering
 
----
+1. Finalize and approve documentation.
+2. Define the shared project format and prototype boundaries.
+3. Build the UI prototype after explicit approval.
+4. Evaluate Gemini integration and source-discovery behavior.
+5. Test permitted media workflows and timestamp verification.
+6. Implement and test local rendering with authorized media.
+7. Evaluate additional AI processing and optional cloud rendering.
 
-*ANICLIP is a work in progress. Planned features are not yet implemented.*
+## Scope and Compliance
+
+ANICLIP helps plan and prepare edits. It does not automatically grant rights to reuse copyrighted anime footage, guarantee platform monetization eligibility, or publish content on the user's behalf.
+
+**Planned features are not implementation claims.** The actual project status must be updated as features are built and tested.
