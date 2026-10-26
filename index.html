@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#111310">
+  <meta name="description" content="ANICLIP — plan coherent anime storytelling clips in your browser.">
+  <title>ANICLIP — Anime Story Clipper</title>
+  <link rel="stylesheet" href="./styles.css">
+  <script src="./app.js" defer></script>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <a class="brand" href="#" aria-label="ANICLIP home" data-view="home">
+        <span class="brand-mark">A<span>•</span></span>
+        <span class="brand-copy"><strong>ANICLIP</strong><small>ANIME STORY CLIPPER</small></span>
+      </a>
+      <div class="workspace-label">WORKSPACE</div>
+      <nav class="main-nav" aria-label="Main navigation">
+        <button class="nav-item active" data-view="home"><span class="nav-icon">⌂</span> Overview</button>
+        <button class="nav-item" data-view="create"><span class="nav-icon">＋</span> Create project</button>
+        <button class="nav-item" data-view="story"><span class="nav-icon">▤</span> Story Builder <span class="nav-pill">MVP</span></button>
+        <button class="nav-item" data-view="sources"><span class="nav-icon">↗</span> Source review</button>
+        <button class="nav-item" data-view="projects"><span class="nav-icon">▣</span> My projects</button>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="free-card"><span class="status-dot"></span><div><strong>Free-first prototype</strong><small>No paid services enabled</small></div></div>
+        <button class="nav-item" data-view="settings"><span class="nav-icon">⚙</span> Settings</button>
+        <div class="user-mini"><span class="avatar">B</span><span><strong>Beta workspace</strong><small>Local browser session</small></span></div>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <button class="mobile-menu" id="mobileMenu" aria-label="Toggle navigation">☰</button>
+        <div class="breadcrumbs"><span>Workspace</span><span class="crumb-slash">/</span><strong id="pageCrumb">Overview</strong></div>
+        <div class="topbar-right"><span class="local-badge"><span class="status-dot"></span> LOCAL MODE</span><button class="icon-button" id="topSettings" title="Settings" aria-label="Settings">⚙</button></div>
+      </header>
+
+      <section class="view active" id="view-home">
+        <div class="welcome-row"><div><div class="eyebrow">YOUR STORY STARTS HERE</div><h1>Make every second <span>mean something.</span></h1><p class="subhead">Build a story first. Review your sources. Prepare your next anime edit.</p></div><button class="button button-primary" data-view="create">＋ New project</button></div>
+        <div class="notice notice-info"><span class="notice-icon">i</span><div><strong>MVP preview mode</strong><p>Story outlines are generated from editable starter templates. Gemini, live source search, and MP4 rendering are not connected yet.</p></div><button class="notice-close" aria-label="Dismiss notice">×</button></div>
+        <div class="stats-grid">
+          <article class="stat-card"><div class="stat-label">YOUR PROJECTS</div><div class="stat-number" id="statProjects">0</div><div class="stat-foot">Saved in this browser</div><span class="stat-icon">▣</span></article>
+          <article class="stat-card"><div class="stat-label">STORY SEGMENTS</div><div class="stat-number" id="statSegments">0</div><div class="stat-foot">Across saved projects</div><span class="stat-icon">▤</span></article>
+          <article class="stat-card"><div class="stat-label">READY TO RENDER</div><div class="stat-number">0</div><div class="stat-foot">Requires media + renderer</div><span class="stat-icon">▷</span></article>
+        </div>
+        <div class="section-heading"><div><h2>Start creating</h2><p>Choose a workflow to begin.</p></div><span class="muted-label">MVP v0.1</span></div>
+        <div class="workflow-grid">
+          <button class="workflow-card" data-view="create"><span class="workflow-icon lime">✦</span><span class="workflow-title">Story-first clip</span><span class="workflow-description">Build one character arc with a hook, planned scenes, and editable overlays.</span><span class="workflow-link">Create story <b>↗</b></span></button>
+          <button class="workflow-card" data-view="create" data-mode="both"><span class="workflow-icon purple">◈</span><span class="workflow-title">Multi-character builder</span><span class="workflow-description">Plan individual character videos, one combined video, or both.</span><span class="workflow-link">Build characters <b>↗</b></span></button>
+          <button class="workflow-card" data-view="projects"><span class="workflow-icon orange">▣</span><span class="workflow-title">Continue a project</span><span class="workflow-description">Open a saved project, update source statuses, or export a backup.</span><span class="workflow-link">View projects <b>↗</b></span></button>
+        </div>
+        <div class="section-heading recent-heading"><div><h2>Recent projects</h2><p>Your work stays in this browser until exported.</p></div><button class="text-button" data-view="projects">View all →</button></div>
+        <div id="recentProjects" class="recent-list"><div class="empty-state"><span>▣</span><strong>No projects yet</strong><p>Create your first anime story project to see it here.</p></div></div>
+      </section>
+
+      <section class="view" id="view-create">
+        <div class="page-intro"><div class="eyebrow">NEW PROJECT</div><h1>Let's build your story.</h1><p>Set the direction first. You can edit every segment after generating the starter plan.</p></div>
+        <form id="projectForm" class="panel form-panel">
+          <div class="panel-heading"><div><span class="step-number">01</span><div><h2>Story setup</h2><p>Start with the anime and the character journey.</p></div></div><span class="required-note">* Required</span></div>
+          <div class="form-grid">
+            <label class="field field-full"><span>Project name <em>*</em></span><input id="projectName" required maxlength="80" placeholder="e.g. Hajime — Built Different"></label>
+            <label class="field"><span>Anime title <em>*</em></span><input id="animeTitle" required placeholder="e.g. Arifureta"></label>
+            <label class="field"><span>Primary character <em>*</em></span><input id="characterName" required placeholder="e.g. Hajime Nagumo"></label>
+            <label class="field"><span>Story type</span><select id="storyType"><option>Character Awakening</option><option>Origin Story</option><option>Betrayal & Revenge</option><option>Strongest Moments</option><option>Emotional Story</option><option>Full Character Journey</option></select></label>
+            <label class="field"><span>Target duration</span><select id="duration"><option value="15">15 seconds</option><option value="20">20 seconds</option><option value="30" selected>30 seconds</option></select></label>
+            <label class="field"><span>Aspect ratio</span><select id="aspectRatio"><option value="9:16" selected>9:16 · Vertical</option><option value="4:5">4:5 · Portrait</option><option value="1:1">1:1 · Square</option><option value="16:9">16:9 · Landscape</option></select></label>
+            <label class="field"><span>Output plan</span><select id="outputMode"><option value="separate">Separate videos</option><option value="combined">One combined video</option><option value="both" selected>Both · Separate + combined</option></select></label>
+          </div>
+          <div class="divider"></div>
+          <div class="panel-heading compact-heading"><div><span class="step-number">02</span><div><h2>Character lineup</h2><p>Use one name per line or separate names with commas. Mode C supports up to five characters in this prototype.</p></div></div></div>
+          <label class="field"><span>Characters</span><textarea id="characterList" rows="4" placeholder="Hajime Nagumo&#10;Yue&#10;Shea Haulia&#10;Tio Klarus&#10;Kaori Shirasaki">Hajime Nagumo
+Yue
+Shea Haulia
+Tio Klarus
+Kaori Shirasaki</textarea><small class="field-help">These are your selected names, not AI-verified character data. Edit the list to fit your project.</small></label>
+          <label class="field"><span>Story direction / notes</span><textarea id="storyNotes" rows="3" placeholder="What should the viewer feel? Any key events to include or avoid?"></textarea></label>
+          <div class="form-footer"><span class="privacy-note"><span>●</span> Saved locally in this browser</span><button class="button button-primary" type="submit">Generate story plan <span>→</span></button></div>
+        </form>
+      </section>
+
+      <section class="view" id="view-story">
+        <div class="page-intro story-intro"><div><div class="eyebrow">STORY BUILDER</div><h1 id="storyPageTitle">Your story, your cut.</h1><p id="storyPageDescription">Edit the hook, narrative beats, and planned timings before reviewing sources.</p></div><div class="page-actions"><button class="button button-secondary" id="exportProjectTop">Export JSON ↗</button><button class="button button-primary" data-view="create">＋ New project</button></div></div>
+        <div id="noStory" class="empty-state large-empty"><span>✦</span><strong>No active story yet</strong><p>Create a project to generate your first editable storyboard.</p><button class="button button-primary" data-view="create">Create project →</button></div>
+        <div id="storyWorkspace" hidden>
+          <div class="project-summary panel"><div class="project-avatar">AN</div><div class="project-summary-copy"><div class="project-kicker" id="summaryAnime">ANIME</div><h2 id="summaryTitle">Project title</h2><p id="summaryMeta">Character · Story type · Duration</p></div><span class="status-chip status-draft" id="summaryStatus">DRAFT</span></div>
+          <div class="mode-switch-wrap"><div><h2>Output plan</h2><p>Mode C supports separate videos and a combined video.</p></div><div class="mode-switch" id="modeSwitch"><button data-mode="separate">Separate</button><button data-mode="combined">Combined</button><button data-mode="both" class="selected">Both</button></div></div>
+          <div id="outputPlanCards" class="output-plan-grid"></div>
+          <div class="story-layout">
+            <div class="story-main-column">
+              <div class="panel hook-panel"><div class="panel-topline"><div><div class="eyebrow">SMART HOOK · STARTER SUGGESTION</div><h2>Win the first second.</h2></div><span class="tag tag-lime">EDITABLE</span></div><label class="field"><span>Opening overlay</span><input id="hookText" maxlength="100" placeholder="Your hook text"></label><p class="field-help">This hook is a template suggestion, not a scene analysis. Choose a verified visual moment later.</p></div>
+              <div class="panel timeline-panel"><div class="panel-topline"><div><div class="eyebrow">STORY RESULT</div><h2>Story timeline</h2><p>Edit the narrative, overlay, and segment length.</p></div><span class="total-time" id="totalTime">30s planned</span></div><div class="timeline-ruler" id="timelineRuler"></div><div id="segmentsList" class="segments-list"></div><div class="timeline-footer"><button class="button button-secondary" id="addSegment">＋ Add segment</button><button class="button button-primary" id="saveStory">Save changes</button></div></div>
+            </div>
+            <aside class="story-side-column">
+              <div class="panel settings-panel"><div class="panel-topline"><h2>Output settings</h2><span class="small-icon">⚙</span></div><label class="field"><span>Duration</span><select id="storyDuration"><option value="15">15 seconds</option><option value="20">20 seconds</option><option value="30">30 seconds</option></select></label><label class="field"><span>Aspect ratio</span><select id="storyRatio"><option value="9:16">9:16 · Vertical</option><option value="4:5">4:5 · Portrait</option><option value="1:1">1:1 · Square</option><option value="16:9">16:9 · Landscape</option></select></label><label class="field"><span>Target resolution</span><select id="storyResolution"><option>720p target</option><option selected>1080p target</option></select></label><div class="settings-note">Targets only. No video has been rendered.</div></div>
+              <div class="panel readiness-panel"><div class="panel-topline"><h2>Project readiness</h2><span class="small-icon">◉</span></div><div class="readiness-row"><span>Story plan</span><span class="readiness-value ready">Created</span></div><div class="readiness-row"><span>Sources</span><span class="readiness-value pending" id="sourceReadiness">Not reviewed</span></div><div class="readiness-row"><span>Media files</span><span class="readiness-value pending">Not mapped</span></div><div class="readiness-row"><span>MP4 render</span><span class="readiness-value pending">Not available</span></div><button class="button button-secondary button-full" data-view="sources">Review sources →</button></div>
+            </aside>
+          </div>
+        </div>
+      </section>
+
+      <section class="view" id="view-sources">
+        <div class="page-intro"><div class="eyebrow">SOURCE REVIEW</div><h1>Evidence before editing.</h1><p>Attach candidate URLs and track what has—and hasn't—been verified.</p></div>
+        <div id="sourcesEmpty" class="empty-state large-empty"><span>↗</span><strong>No story to review</strong><p>Create a story first. Each segment can then hold a candidate source and verification status.</p><button class="button button-primary" data-view="create">Create project →</button></div>
+        <div id="sourcesWorkspace" hidden><div class="notice notice-warning"><span class="notice-icon">!</span><div><strong>Source links are not editable media.</strong><p>This prototype does not download videos or verify scene timestamps automatically. Only use media you own or are authorized to edit.</p></div></div><div id="sourceCards" class="source-cards"></div><div class="source-actions"><button class="button button-secondary" id="saveSources">Save source review</button><button class="button button-primary" id="exportFromSources">Export project JSON ↗</button></div></div>
+      </section>
+
+      <section class="view" id="view-projects">
+        <div class="page-intro"><div class="eyebrow">PROJECT LIBRARY</div><h1>Your projects.</h1><p>Projects are stored in this browser. Export JSON regularly to keep a backup.</p></div>
+        <div class="library-toolbar"><div class="search-box"><span>⌕</span><input id="projectSearch" placeholder="Search projects..." aria-label="Search projects"></div><button class="button button-secondary" id="importProject">Import JSON ↥</button><input type="file" id="importFile" accept=".json,application/json" hidden><button class="button button-primary" data-view="create">＋ New project</button></div>
+        <div id="projectsList" class="projects-list"></div>
+      </section>
+
+      <section class="view" id="view-settings">
+        <div class="page-intro"><div class="eyebrow">PREFERENCES</div><h1>Settings & boundaries.</h1><p>Prototype status, local data, and cost guardrails.</p></div>
+        <div class="settings-grid">
+          <div class="panel settings-section"><div class="settings-section-icon">✦</div><h2>AI connection</h2><span class="status-chip status-draft">NOT CONNECTED</span><p>This version uses editable starter templates. Gemini integration requires a secure backend; your API key must never be placed in browser code or committed to GitHub.</p><button class="button button-secondary" disabled>AI connection · Later phase</button></div>
+          <div class="panel settings-section"><div class="settings-section-icon">▣</div><h2>Storage</h2><span class="status-chip status-ready">LOCAL BROWSER</span><p>Project data is saved in this browser's local storage. Clearing browser data may remove projects, so export JSON backups.</p><button class="button button-secondary" id="exportAllProjects">Export all projects</button></div>
+          <div class="panel settings-section"><div class="settings-section-icon">▷</div><h2>Rendering</h2><span class="status-chip status-draft">NOT CONNECTED</span><p>This app does not currently download source media, render MP4, or claim that a video is ready. Rendering will be evaluated as a separate phase.</p></div>
+          <div class="panel settings-section"><div class="settings-section-icon">＄</div><h2>Cost guardrail</h2><span class="status-chip status-ready">FREE-FIRST</span><p>No paid API, cloud rendering, or billing is enabled by this prototype. Free-tier limits must be checked before integrations are added.</p></div>
+        </div>
+        <div class="panel danger-zone"><div><h2>Clear local projects</h2><p>Deletes all ANICLIP projects saved in this browser. Export a backup first.</p></div><button class="button button-danger" id="clearProjects">Clear projects</button></div>
+      </section>
+
+      <footer class="app-footer"><span>ANICLIP <span class="footer-dot">•</span> MVP v0.1</span><span>Story first. Verify sources. Render only when ready.</span><span>Built for beta testing <span class="footer-heart">♥</span></span></footer>
+    </main>
+  </div>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <dialog id="confirmDialog" class="confirm-dialog"><form method="dialog"><div class="dialog-mark">!</div><h2 id="dialogTitle">Are you sure?</h2><p id="dialogText">This action cannot be undone.</p><div class="dialog-actions"><button class="button button-secondary" value="cancel">Cancel</button><button class="button button-danger" id="dialogConfirm" value="confirm">Confirm</button></div></form></dialog>
+</body>
+</html>
