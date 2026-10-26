@@ -6,7 +6,7 @@ ANICLIP is a planned AI-assisted tool for creating coherent, short anime storyte
 
 The goal is not simply to collect random anime scenes. ANICLIP is designed to help creators build a story arc, discover relevant source candidates, review scene selections, and prepare an editing project for rendering.
 
-> **Project status:** Requirements and documentation are being finalized. Features described as planned are not necessarily implemented.
+> **Project status:** MVP v0.1 browser prototype is being built on the `feat/mvp-v0.1` branch. It currently uses local starter templates; live Gemini integration, automated source search, and MP4 rendering are not connected.
 
 ## Product Workflow
 
@@ -103,18 +103,26 @@ Cloud rendering is optional and must depend on actual free-tier quotas, compute 
 - [Workflow Flowchart](docs/FLOWCHART.md)
 - [Product Specification](docs/SPECIFICATION.md)
 
+## MVP v0.1 Prototype Status
+
+The first browser prototype is being developed as a static, free-first web app. It includes an editable starter storyboard, Mode C multi-character planning (individual and combined plans), local project storage, source-status review, output preferences, and JSON import/export.
+
+- **Implemented in the prototype branch:** responsive UI, local starter-template story plans, project library, editable segments, source review fields, JSON backup/import, and a GitHub Pages deployment workflow.
+- **Not connected yet:** Gemini API, live anime/source search, automatic timestamp verification, source-video download, and MP4 rendering.
+- **Data storage:** browser local storage. Export JSON backups before clearing browser data or switching devices.
+- **Deployment:** GitHub Pages can serve the static app after the workflow is merged to `main` and Pages is enabled for GitHub Actions in repository settings.
+
 ## Roadmap
 
-1. Finalize and approve documentation.
-2. Define the shared project format and prototype boundaries.
-3. Build the UI prototype after explicit approval.
-4. Evaluate Gemini integration and source-discovery behavior.
-5. Test permitted media workflows and timestamp verification.
-6. Implement and test local rendering with authorized media.
-7. Evaluate additional AI processing and optional cloud rendering.
+1. Beta-test the browser prototype and fix UI/data issues.
+2. Validate the shared project format and source-review workflow.
+3. Evaluate a secure backend for Gemini integration without exposing API keys.
+4. Test permitted media workflows and timestamp verification.
+5. Implement and test local rendering with authorized media.
+6. Evaluate additional AI processing and optional cloud rendering against real cost limits.
 
 ## Scope and Compliance
 
 ANICLIP helps plan and prepare edits. It does not automatically grant rights to reuse copyrighted anime footage, guarantee platform monetization eligibility, or publish content on the user's behalf.
 
-**Planned features are not implementation claims.** The actual project status must be updated as features are built and tested.
+**Prototype limits are explicit:** the current UI creates editable starter plans; it does not claim AI-generated verification, source access, or successful MP4 rendering until those capabilities are implemented and tested.

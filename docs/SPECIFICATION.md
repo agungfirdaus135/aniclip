@@ -30,6 +30,12 @@ The main product principle is:
 
 If a search result is ambiguous, the user must have a manual fallback. ANICLIP must not invent anime details, character information, sources, scenes, or timestamps.
 
+## 3A. Multi-Character Story Builder — Mode C
+
+The MVP supports planning either individual character videos, one combined multi-character video, or both outputs from one anime project. A project can list up to five characters in the current prototype. Each individual plan has its own editable story beats; the combined plan arranges character-focused beats within the selected total duration.
+
+Character names and starter story beats are user-editable and are not automatically verified. Source URLs, episode references, timestamps, media access, and usage rights remain separate review tasks. Mode C is a planning capability in the current prototype; it does not imply that final MP4 files can already be rendered.
+
 ## 4. Anime and Character Search
 
 ### Requirements
@@ -315,4 +321,4 @@ The planned design is ready for implementation planning when:
 - Security, copyright, and cost boundaries are explicit.
 - Planned functionality is not misrepresented as implemented functionality.
 
-Implementation must not begin until the user explicitly approves the documentation and authorizes the next phase.
+Implementation has been explicitly authorized. The MVP v0.1 prototype is being built on a feature branch; beta feedback should guide follow-up revisions.

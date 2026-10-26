@@ -157,4 +157,4 @@ The interface must distinguish between planning, media preparation, rendering, c
 
 ## 7. Implementation Gate
 
-This workflow is a design target. Application coding and repository changes must wait for explicit user approval of the final documentation.
+Implementation has been explicitly authorized. The MVP v0.1 browser prototype is being developed on a feature branch. The static prototype does not yet connect Gemini, live source search, timestamp verification, or MP4 rendering.
