@@ -83,10 +83,12 @@
     try {
       const url = new URL(String(value || '').trim());
       if (url.protocol !== 'https:' && url.protocol !== 'http:') return false;
-      const host = url.hostname.toLowerCase().replace(/^www\\./, '');
-      if (host === 'youtu.be') return url.pathname.split('/').filter(Boolean).length >= 1;
+      const host = url.hostname.toLowerCase().replace(/^www\./, '');
+      if (host === 'youtu.be') return /^\/[A-Za-z0-9_-]{6,}$/.test(url.pathname);
       if (host === 'youtube.com' || host === 'm.youtube.com' || host === 'music.youtube.com') {
-        return Boolean(url.searchParams.get('v')) || /^\\/(shorts|embed|live)\\/[^/]+/.test(url.pathname);
+        const videoId = url.searchParams.get('v');
+        const pathMatch = /^\/(shorts|embed|live)\/([A-Za-z0-9_-]{6,})$/.exec(url.pathname);
+        return Boolean(videoId && /^[A-Za-z0-9_-]{6,}$/.test(videoId)) || Boolean(pathMatch);
       }
       return false;
     } catch (_) { return false; }
