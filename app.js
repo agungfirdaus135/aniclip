@@ -125,7 +125,7 @@
     const individualPlans = normalizedCharacters.map(character => ({
       character, duration: form.duration, segments: makeSegments(form.storyType, form.duration, character)
     }));
-    const combinedCount = Math.min(normalizedCharacters.length, form.duration <= 15 ? 3 : form.duration <= 20 ? 4 : 5);
+    const combinedCount = Math.min(normalizedCharacters.length, 5);
     const combinedSegments = makeSegments(form.storyType, form.duration, normalizedCharacters[0], combinedCount);
     combinedSegments.forEach((segment, index) => {
       segment.character = normalizedCharacters[index % normalizedCharacters.length];
@@ -365,7 +365,7 @@
     }
   });
 
-  $$('.nav-item[data-view]').forEach(button => button.addEventListener('click', () => navigate(button.dataset.view)));
+
   $('#mobileMenu').addEventListener('click', () => $('#sidebar').classList.toggle('open'));
   $('#topSettings').addEventListener('click', () => navigate('settings'));
   $('.notice-close')?.addEventListener('click', event => event.currentTarget.closest('.notice').remove());
@@ -421,8 +421,8 @@
       } else rebalance(plan.segments, newDuration);
     });
     project.combinedPlan.duration = newDuration;
-    if (project.combinedPlan.segments.length !== (newDuration <= 15 ? 3 : newDuration <= 20 ? 4 : 5)) {
-      project.combinedPlan.segments = makeSegments(project.storyType, newDuration, project.characters[0]);
+    const combinedCount = Math.min(project.characters.length, 5);\n    if (project.combinedPlan.segments.length !== combinedCount) {
+      project.combinedPlan.segments = makeSegments(project.storyType, newDuration, project.characters[0], combinedCount);
       project.combinedPlan.segments.forEach((segment, index) => {
         segment.character = project.characters[index % project.characters.length];
         segment.title = segment.character + ' · ' + segment.title;
