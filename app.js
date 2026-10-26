@@ -293,10 +293,16 @@
     $('#sourceCards').innerHTML = plan.segments.map((segment, index) => `<article class="source-card" data-source-id="${safe(segment.id)}"><div class="source-card-header"><span class="segment-index">${String(index+1).padStart(2,'0')}</span><div><strong>${safe(segment.title)}</strong><small>${safe(segment.character || plan.character || project.characterName)} · ${Number(segment.duration) || 0}s planned</small></div><span class="status-chip status-draft">${safe(segment.sourceStatus || 'Unverified')}</span></div><div class="source-card-grid"><label class="field"><span>Candidate source URL</span><input data-source-field="sourceUrl" type="url" placeholder="https://..." value="${safe(segment.sourceUrl)}"></label><label class="field"><span>Verification status</span><select data-source-field="sourceStatus">${['Unverified','Candidate Found','Details Verified','Timestamp Verified','Media Available','Usage Reviewed','Render Ready','Unavailable'].map(status => '<option' + (segment.sourceStatus === status ? ' selected' : '') + '>' + status + '</option>').join('')}</select></label><label class="field"><span>Timestamp / scene reference</span><input data-source-field="timestamp" placeholder="Only enter after checking the source" value="${safe(segment.timestamp || '')}"></label><label class="field"><span>Review notes</span><input data-source-field="notes" placeholder="What still needs checking?" value="${safe(segment.notes || '')}"></label></div><p class="source-help">A link does not prove media access, scene accuracy, timestamp accuracy, or usage rights. Verify each item yourself.</p></article>`).join('');
   }
   function saveSourceUI() {
-    const invalidSource = $('.source-card [data-source-field="sourceUrl"]').find(field => field.value.trim() && !isYouTubeUrl(field.value));
+    const urlFields = $('[data-source-field="sourceUrl"]');
+    const invalidSource = urlFields.find(field => field.value.trim() && !isYouTubeUrl(field.value));
+    urlFields.forEach(field => {
+      const invalid = Boolean(field.value.trim() && !isYouTubeUrl(field.value));
+      field.setAttribute('aria-invalid', String(invalid));
+      field.title = invalid ? 'Enter a valid YouTube video URL (youtube.com or youtu.be).' : '';
+    });
     if (invalidSource) {
       invalidSource.focus();
-      showToast('Beta v0.3 accepts YouTube links only (youtube.com or youtu.be).');
+      showToast('Invalid link. Use a YouTube video URL (youtube.com or youtu.be).');
       return;
     }
     const project = activeProject();
