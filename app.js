@@ -421,7 +421,8 @@
       } else rebalance(plan.segments, newDuration);
     });
     project.combinedPlan.duration = newDuration;
-    const combinedCount = Math.min(project.characters.length, 5);\n    if (project.combinedPlan.segments.length !== combinedCount) {
+    const combinedCount = Math.min(project.characters.length, 5);
+    if (project.combinedPlan.segments.length !== combinedCount) {
       project.combinedPlan.segments = makeSegments(project.storyType, newDuration, project.characters[0], combinedCount);
       project.combinedPlan.segments.forEach((segment, index) => {
         segment.character = project.characters[index % project.characters.length];
