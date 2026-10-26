@@ -78,6 +78,7 @@
       return false;
     }
   }
+  function normalizeOutputMode(mode) { return ['separate', 'combined', 'both'].includes(mode) ? mode : 'both'; }
   function activeProject() { return projects.find(project => project.id === activeProjectId) || null; }
   function allPlans(project) {
     if (!project) return [];
@@ -202,6 +203,7 @@
     $('#noStory').hidden = Boolean(project);
     $('#storyWorkspace').hidden = !project;
     if (!project) return;
+    project.outputMode = normalizeOutputMode(project.outputMode);
     $('#storyPageTitle').textContent = project.name || 'Your story, your cut.';
     $('#storyPageDescription').textContent = project.animeTitle + ' · ' + project.characters.length + ' character(s) · editable starter storyboard';
     $('#summaryAnime').textContent = project.animeTitle.toUpperCase();
@@ -256,9 +258,11 @@
         segment[key] = key === 'duration' ? Math.max(1, Math.min(project.duration, Number(field.value) || 1)) : field.value.trim();
       });
     });
+    project.duration = Number($('#storyDuration').value) || project.duration;
+    project.outputMode = normalizeOutputMode(project.outputMode);
+    rebalance(plan.segments, project.duration);
     plan.duration = project.duration;
     project.hook = $('#hookText').value.trim();
-    project.duration = Number($('#storyDuration').value);
     project.aspectRatio = $('#storyRatio').value;
     project.resolution = $('#storyResolution').value;
     project.updatedAt = new Date().toISOString();
@@ -359,6 +363,7 @@
       saveActivePlanFromUI();
       plan.segments = plan.segments.filter(segment => segment.id !== remove.dataset.removeSegment);
       plan.segments.forEach((segment, index) => segment.order = index + 1);
+      rebalance(plan.segments, project.duration);
       project.updatedAt = new Date().toISOString();
       persist(); renderStory(); showToast('Segment removed.');
       return;
@@ -446,6 +451,7 @@
     if (!project || !plan) return;
     saveActivePlanFromUI();
     plan.segments.push({id:uid(),title:'New story beat',narrative:'Describe the role this moment plays in the story.',overlay:'ADD YOUR OVERLAY',duration:1,sourceUrl:'',sourceStatus:'Unverified',timestamp:'',notes:'',character:plan.character || project.characterName,order:plan.segments.length+1});
+    rebalance(plan.segments, project.duration);
     project.updatedAt = new Date().toISOString(); persist(); renderStory(); showToast('Segment added. Update timing to fit your target.');
   });
   $('#exportProjectTop').addEventListener('click', () => exportProject(activeProject()));
@@ -459,6 +465,7 @@
       const parsed = JSON.parse(await file.text());
       const incoming = Array.isArray(parsed.projects) ? parsed.projects : [parsed];
       const valid = incoming.filter(project => project && project.schemaVersion === 'ANICLIP Project v1' && project.name && project.id);
+      valid.forEach(project => { project.outputMode = normalizeOutputMode(project.outputMode); });
       if (!valid.length) throw new Error('No valid ANICLIP project found.');
       valid.forEach(project => {
         if (projects.some(existing => existing.id === project.id)) project.id = uid();
