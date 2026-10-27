@@ -21,6 +21,7 @@
         <button class="nav-item active" data-view="home"><span class="nav-icon">⌂</span> Overview</button>
         <button class="nav-item" data-view="create"><span class="nav-icon">＋</span> Create project</button>
         <button class="nav-item" data-view="story"><span class="nav-icon">▤</span> Story Builder <span class="nav-pill">MVP</span></button>
+        <button class="nav-item" data-view="finder"><span class="nav-icon">⌕</span> Source Finder <span class="nav-pill">NEW</span></button>
         <button class="nav-item" data-view="sources"><span class="nav-icon">↗</span> Source review</button>
         <button class="nav-item" data-view="projects"><span class="nav-icon">▣</span> My projects</button>
       </nav>
@@ -95,6 +96,21 @@
             </aside>
           </div>
         </div>
+      </section>
+
+      <section class="view" id="view-finder">
+        <div class="page-intro"><div class="eyebrow">SOURCE FINDER · V0.5</div><h1>Find a better source.</h1><p>Start with an anime title or scene. If your first link fails, use these alternate search routes instead of downloading and re-uploading files.</p></div>
+        <div class="notice notice-info"><span class="notice-icon">i</span><div><strong>Search helper, not live verification.</strong><p>This free prototype opens external search pages. It does not automatically inspect video availability, retrieve media, verify timestamps, or render MP4 yet.</p></div></div>
+        <form id="sourceFinderForm" class="panel form-panel">
+          <div class="panel-heading"><div><span class="step-number">01</span><div><h2>Describe the scene</h2><p>Be specific so alternate searches are more useful.</p></div></div></div>
+          <div class="form-grid">
+            <label class="field"><span>Anime title <em>*</em></span><input id="finderAnime" required maxlength="120" placeholder="e.g. Arifureta"></label>
+            <label class="field"><span>Character or scene</span><input id="finderScene" maxlength="180" placeholder="e.g. Hajime betrayal and awakening"></label>
+            <label class="field field-full"><span>First YouTube link (optional)</span><input id="finderUrl" type="url" placeholder="https://youtu.be/..."><small class="field-help">A pasted URL is treated as an unverified candidate. This tool does not download it.</small></label>
+          </div>
+          <div class="form-footer"><span class="privacy-note"><span>●</span> No API key or paid service required</span><button class="button button-primary" type="submit">Find search alternatives <span>→</span></button></div>
+        </form>
+        <section id="finderResults" class="finder-results" hidden aria-live="polite"></section>
       </section>
 
       <section class="view" id="view-sources">

@@ -170,7 +170,7 @@
     currentView = view;
     $$('.view').forEach(element => element.classList.toggle('active', element.id === 'view-' + view));
     $$('.nav-item[data-view]').forEach(element => element.classList.toggle('active', element.dataset.view === view));
-    const labels = {home:'Overview', create:'Create project', story:'Story Builder', sources:'Source review', projects:'My projects', settings:'Settings'};
+    const labels = {home:'Overview', create:'Create project', story:'Story Builder', finder:'Source Finder', sources:'Source review', projects:'My projects', settings:'Settings'};
     $('#pageCrumb').textContent = labels[view] || 'Overview';
     $('#sidebar').classList.remove('open');
     if (view === 'home') renderHome();
@@ -481,6 +481,24 @@
     project.updatedAt = new Date().toISOString(); persist(); renderStory(); showToast('Segment added. Update timing to fit your target.');
   });
   $('#exportProjectTop').addEventListener('click', () => exportProject(activeProject()));
+  $('#sourceFinderForm').addEventListener('submit', event => {
+    event.preventDefault();
+    const anime = $('#finderAnime').value.trim();
+    const scene = $('#finderScene').value.trim();
+    const candidateUrl = $('#finderUrl').value.trim();
+    if (!anime) { showToast('Enter an anime title first.'); return; }
+    const query = [anime, scene].filter(Boolean).join(' ');
+    const searches = [
+      {title:'YouTube · scene search', detail:'Search for scene clips and candidate references.', url:'https://www.youtube.com/results?search_query='+encodeURIComponent(query+' anime scene')},
+      {title:'YouTube · official sources', detail:'Look for official trailers, previews, or publisher channels.', url:'https://www.youtube.com/results?search_query='+encodeURIComponent(query+' official trailer preview')},
+      {title:'Web search · authorized viewing', detail:'Look for official streaming or publisher pages in your region.', url:'https://www.google.com/search?q='+encodeURIComponent(query+' official streaming watch')},
+      {title:'Web search · alternate references', detail:'Try alternate wording if the first result is unavailable.', url:'https://www.google.com/search?q='+encodeURIComponent(query+' anime clip scene')}
+    ];
+    const candidate = candidateUrl ? '<div class="finder-candidate"><strong>Submitted link · Unverified</strong><p>'+safe(candidateUrl)+'</p><small>Accessibility, scene contents, timestamps, edit permission, and media access have not been checked.</small></div>' : '';
+    $('#finderResults').hidden = false;
+    $('#finderResults').innerHTML = '<div class="section-heading"><div><h2>Search routes</h2><p>Results open on the relevant external website. Review each source yourself.</p></div><span class="muted-label">'+searches.length+' search links</span></div>'+candidate+'<div class="finder-link-grid">'+searches.map(item=>'<article class="panel finder-link-card"><div class="eyebrow">ALTERNATIVE SEARCH</div><h3>'+safe(item.title)+'</h3><p>'+safe(item.detail)+'</p><a class="button button-secondary" href="'+item.url+'" target="_blank" rel="noopener noreferrer">Open search ↗</a></article>').join('')+'</div><div class="notice notice-warning"><span class="notice-icon">!</span><div><strong>Fallback is not automatic yet.</strong><p>If a source is unavailable, open another search route above and add a usable, authorized candidate to Source review. Live AI discovery and media processing are future integrations.</p></div></div>';
+    $('#finderResults').scrollIntoView({behavior:'smooth',block:'start'});
+  });
   $('#saveSources').addEventListener('click', saveSourceUI);
   $('#exportFromSources').addEventListener('click', () => { saveSourceUI(); exportProject(activeProject()); });
   $('#projectSearch').addEventListener('input', renderProjects);
