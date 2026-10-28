@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#111310">
+<title>Browser Renderer · ANICLIP</title>
+<style>
+:root{color-scheme:dark;--bg:#111310;--panel:#1a1d16;--line:#343a2c;--text:#eef1e8;--muted:#9aa18e;--lime:#c5f27b}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:14px system-ui,sans-serif}.wrap{max-width:1100px;margin:auto;padding:24px}.top{display:flex;justify-content:space-between;gap:16px;align-items:center;margin-bottom:24px}.brand{color:var(--lime);font-weight:800;text-decoration:none;letter-spacing:2px}.pill{font-size:11px;color:var(--lime);border:1px solid #475535;padding:6px 9px;border-radius:20px}.grid{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(270px,.8fr);gap:18px}.panel{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px;margin-bottom:16px}h1{font-size:clamp(26px,4vw,38px);margin:8px 0}h2{font-size:16px;margin:0 0 14px}.muted{color:var(--muted);line-height:1.6;font-size:12px}.preview{background:#070807;border-radius:10px;overflow:hidden;display:grid;place-items:center;min-height:240px}canvas{display:block;width:100%;max-height:66vh;object-fit:contain;background:#070807}label{display:block;font-size:12px;color:var(--muted);margin:13px 0 6px}input,select,button{font:inherit}input[type=text],input[type=number],select,input[type=file]{width:100%;padding:10px;border:1px solid var(--line);background:#11130f;color:var(--text);border-radius:8px}input[type=range]{width:100%}.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}.check{display:flex;align-items:center;gap:8px}.check input{width:auto}.buttons{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}button,.button{border:1px solid var(--line);border-radius:8px;background:#262b20;color:var(--text);padding:10px 13px;cursor:pointer;text-decoration:none}.primary{background:var(--lime);color:#19200f;border-color:var(--lime);font-weight:750}button:disabled{opacity:.45;cursor:not-allowed}.status{padding:10px;background:#12150f;border-radius:8px;color:var(--muted);font-size:12px;line-height:1.5;margin-top:12px}.warning{border-left:3px solid #e5b86d;padding-left:12px}.small{font-size:11px}@media(max-width:760px){.grid{grid-template-columns:1fr}.wrap{padding:15px}.top{align-items:flex-start;flex-direction:column}}
+</style></head>
+<body><main class="wrap">
+<header class="top"><a class="brand" href="./index.html">ANICLIP / BROWSER RENDERER</a><span class="pill">LOCAL · NO UPLOAD</span></header>
+<div class="panel"><div class="muted">HYBRID RENDERER · PHASE 1</div><h1>Render a clip in your browser.</h1><p class="muted">Choose a local video you own or are authorized to edit, preview an English text overlay, then export a WebM file if your browser supports it. The source video stays on your device; this page does not upload or download media.</p></div>
+<div class="grid"><section>
+<div class="panel"><h2>Preview</h2><div class="preview"><canvas id="canvas" width="540" height="960" aria-label="Video render preview"></canvas></div><video id="video" playsinline muted hidden></video><div class="buttons"><button id="play" disabled>▶ Play / pause</button><button id="restart" disabled>↺ Restart</button></div><div id="status" class="status" role="status">Choose a local video to begin.</div></div>
+<div class="panel"><h2>Source media</h2><label for="file">Local video file</label><input id="file" type="file" accept="video/*"><p class="muted warning">Only use files you own or are authorized to edit. No DRM bypass or source-site downloading is performed.</p><div class="row"><div><label for="duration">Clip length (seconds)</label><select id="duration"><option>15</option><option>20</option><option selected>30</option></select></div><div><label for="ratio">Aspect ratio</label><select id="ratio"><option value="9:16" selected>9:16 Vertical</option><option value="4:5">4:5 Portrait</option><option value="1:1">1:1 Square</option><option value="16:9">16:9 Landscape</option></select></div></div></div>
+</section><aside>
+<div class="panel"><h2>Smart Hook · manual preview</h2><p class="muted">This phase does not use AI to analyze scenes. Enter the overlay you want to test.</p><label for="overlay">English text overlay</label><input id="overlay" type="text" maxlength="100" value="BRO IS BUILT DIFFERENT 💀" placeholder="Enter hook text"><label for="position">Overlay position</label><select id="position"><option value="bottom" selected>Bottom</option><option value="center">Center</option><option value="top">Top</option></select><label for="size">Text size <span id="sizeValue">42</span> px</label><input id="size" type="range" min="18" max="72" value="42"><label class="check"><input id="outline" type="checkbox" checked> Add readable outline</label><label class="check"><input id="autoplay" type="checkbox"> Auto-play preview when loaded</label><div class="buttons"><button id="update">Update preview</button><button id="export" class="primary" disabled>Export WebM</button></div><div class="status">Export format: WebM (browser support varies). This is not MP4. No watermark is added by ANICLIP.</div></div>
+<div class="panel"><h2>What this phase supports</h2><p class="muted">✓ Local video input<br>✓ Aspect-ratio preview and center crop<br>✓ Editable text overlay<br>✓ Browser-side WebM export when supported</p><p class="muted">Not included yet: AI scene analysis, verified source timestamps, multi-segment stitching, audio/music mixing, MP4 encoding, or server rendering.</p></div>
+</aside></div></main>
+<script>
+(() => {
+const $ = id => document.getElementById(id);
+const video=$('video'), canvas=$('canvas'), ctx=canvas.getContext('2d');
+let mediaUrl='', raf=0, exporting=false;
+function dimensions(){const [w,h]=$('ratio').value.split(':').map(Number);const base=960;canvas.width=Math.round(base*w/h);canvas.height=base;}
+function draw(){
+ const w=canvas.width,h=canvas.height;ctx.fillStyle='#070807';ctx.fillRect(0,0,w,h);
+ if(video.readyState>=2&&video.videoWidth&&video.videoHeight){
+  const scale=Math.max(w/video.videoWidth,h/video.videoHeight),dw=video.videoWidth*scale,dh=video.videoHeight*scale;
+  ctx.drawImage(video,(w-dw)/2,(h-dh)/2,dw,dh);
+ } else {
+  ctx.fillStyle='#c5f27b';ctx.textAlign='center';ctx.font='700 22px system-ui';ctx.fillText('ANICLIP PREVIEW',w/2,h/2-14);
+  ctx.fillStyle='#9aa18e';ctx.font='14px system-ui';ctx.fillText('Choose a local video file',w/2,h/2+18);
+ }
+ const text=$('overlay').value.trim();if(text){
+  const size=Number($('size').value),maxWidth=w*.84;ctx.font='800 '+size+'px system-ui';ctx.textAlign='center';ctx.textBaseline='middle';
+  let lines=[],words=text.split(/\s+/),line='';
+  for(const word of words){const test=line?line+' '+word:word;if(ctx.measureText(test).width>maxWidth&&line){lines.push(line);line=word}else line=test}if(line)lines.push(line);
+  const lineHeight=size*1.15,total=lines.length*lineHeight;let y=$('position').value==='top'?h*.15:($('position').value==='center'?h/2:h*.82);if($('position').value==='bottom')y-=total/2;else y-=total/2;
+  lines.forEach((item,i)=>{const yy=y+i*lineHeight;if($('outline').checked){ctx.lineWidth=Math.max(3,size*.12);ctx.strokeStyle='#080908';ctx.lineJoin='round';ctx.strokeText(item,w/2,yy)}ctx.fillStyle='#fff';ctx.fillText(item,w/2,yy)});
+ }
+}
+function loop(){draw();if(!video.paused&&!video.ended)raf=requestAnimationFrame(loop)}
+function setStatus(msg){$('status').textContent=msg}
+function load(){if(!video.src)return;dimensions();draw();$('export').disabled=!window.MediaRecorder||!canvas.captureStream;setStatus('Video loaded. Preview ready. Maximum export length: '+$('duration').value+' seconds.');if($('autoplay').checked)video.play().catch(()=>{});}
+$('file').addEventListener('change',e=>{const file=e.target.files&&e.target.files[0];if(!file)return;if(mediaUrl)URL.revokeObjectURL(mediaUrl);mediaUrl=URL.createObjectURL(file);video.src=mediaUrl;video.load();$('play').disabled=false;$('restart').disabled=false;video.onloadedmetadata=load;});
+['overlay','position','size','outline','ratio'].forEach(id=>$(id).addEventListener('input',()=>{if(id==='ratio')dimensions();$('sizeValue').textContent=$('size').value;draw()}));
+$('update').addEventListener('click',()=>{draw();setStatus('Preview updated locally.')});
+$('play').addEventListener('click',()=>{if(video.paused){video.play().then(()=>{cancelAnimationFrame(raf);loop()}).catch(()=>setStatus('This file could not play in your browser.'))}else video.pause()});
+$('restart').addEventListener('click',()=>{video.currentTime=0;video.play().then(loop).catch(()=>{});});
+video.addEventListener('play',()=>{cancelAnimationFrame(raf);loop()});video.addEventListener('pause',()=>{cancelAnimationFrame(raf);draw()});video.addEventListener('seeked',draw);
+$('duration').addEventListener('change',()=>setStatus('Clip length set to '+$('duration').value+' seconds.'));
+$('export').addEventListener('click',()=>{
+ if(exporting||!video.src||!window.MediaRecorder||!canvas.captureStream)return;
+ exporting=true;$('export').disabled=true;const max=Number($('duration').value);const start=video.currentTime;
+ try{
+  const stream=canvas.captureStream(30);const mime=['video/webm;codecs=vp9','video/webm;codecs=vp8','video/webm'].find(type=>MediaRecorder.isTypeSupported(type));
+  if(!mime)throw new Error('This browser does not support WebM recording.');
+  const recorder=new MediaRecorder(stream,{mimeType:mime}),chunks=[];recorder.ondataavailable=e=>{if(e.data.size)chunks.push(e.data)};
+  recorder.onerror=()=>{exporting=false;$('export').disabled=false;setStatus('Export failed in this browser. Try a supported desktop browser.');};
+  recorder.onstop=()=>{const blob=new Blob(chunks,{type:mime}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='aniclip-browser-render.webm';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),3000);stream.getTracks().forEach(t=>t.stop());video.pause();video.currentTime=start;exporting=false;$('export').disabled=false;draw();setStatus('WebM export finished. Check your downloads. MP4 is not generated in this phase.');};
+  video.pause();video.currentTime=start;const actual=Math.min(max,Math.max(0,video.duration-start));if(actual<=0)throw new Error('Move the playhead before the end of the video.');recorder.start(250);video.play().then(()=>{loop();setTimeout(()=>{video.pause();if(recorder.state!=='inactive')recorder.stop()},actual*1000)}).catch(()=>{recorder.stop()});setStatus('Recording preview to WebM… keep this tab open until export finishes.');
+ }catch(err){exporting=false;$('export').disabled=false;setStatus(err.message||'Could not start browser export.');}
+});
+dimensions();draw();
+})();
+</script></body></html>
