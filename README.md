@@ -103,6 +103,14 @@ Cloud rendering is optional and must depend on actual free-tier quotas, compute 
 - [Workflow Flowchart](docs/FLOWCHART.md)
 - [Product Specification](docs/SPECIFICATION.md)
 
+## Browser Renderer v0.1 (experimental)
+
+- Open `renderer.html` from the app navigation to load a local video file, preview an editable English text overlay, choose an aspect ratio, and attempt a browser-side WebM export.
+- Media processing stays in the browser; this prototype does not upload the selected file to ANICLIP.
+- Export support and performance vary by browser/device. Keep the tab open during recording and test with a short clip first.
+- This is **WebM, not MP4**. AI scene analysis/Smart Hook selection, multi-segment stitching, audio mixing, verified timestamps, and server rendering are not implemented in this phase.
+- Only use media you own or are authorized to edit. The tool does not download source-site videos or bypass access controls.
+
 ## MVP v0.1 Prototype Status
 
 The first browser prototype is being developed as a static, free-first web app. It includes an editable starter storyboard, Mode C multi-character planning (individual and combined plans), local project storage, source-status review, output preferences, and JSON import/export.
